@@ -2,47 +2,59 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class RSA {
-    public static BigInteger e = new BigInteger("3"); // a=e=3, 5, 7 or (2^16)+1
+    public static BigInteger e = new BigInteger("65537"); // a=e=3, 5, 7 or (2^16)+1
 
     public static void main(String[] args) {
         Random r = new Random();
-        System.out.println(testEuclidsAlgorithm() ? "Algoritmen funkar!" : "Algoritmen fungerar inte...");
 
+        // Question C: Uncomment this to test the algoritm
+        // System.out.println(testEuclidsAlgorithm() ? "Algoritmen funkar!" :
+        // "Algoritmen fungerar inte...");
+
+        // BigInteger q = PrimeFinder.generatePrime(512, r);
+        // BigInteger p = PrimeFinder.generatePrime(512, r);
+        BigInteger q = new BigInteger(
+                "8307769051273421780696919063666844836718940826346093732248802002593429761688688029342383461687584069007551554382663037097856353229202050400087959602693091");
+        BigInteger p = new BigInteger(
+                "7207597317903766750519784230994376914317599587332274160752033968574212627910105282787635236581386230309938884368320929301279880959561136587018980259548659");
+
+        BigInteger m = (q.subtract(BigInteger.ONE).multiply(p.subtract(BigInteger.ONE)));
+
+        // Compute the modular inverse of e using Euclid's algorithm
+        BigInteger v = euclidsAlgorithm(m);
+
+        BigInteger n = q.multiply(p);
+
+        // Generate a number s so that 0 < s < n
         Integer numberToEncrypt = r.nextInt(100000);
-        BigInteger s = new BigInteger(numberToEncrypt.toString()); // My number
+        BigInteger s = new BigInteger(numberToEncrypt.toString());
+        System.out.println("s: " + s);
 
-        // System.out.println("Vårt första valda e är: " + e);
-        // System.out.println("Vårt valda tal att kryptera är: " + s);
+        BigInteger c = encrypt(s, n);
+        BigInteger z = decrypt(c, v, n);
 
-        // //BigInteger q = PrimeFinder.generatePrime(512, r);
-        // //BigInteger p = PrimeFinder.generatePrime(512, r);
-        // BigInteger q = new
-        // BigInteger("8307769051273421780696919063666844836718940826346093732248802002593429761688688029342383461687584069007551554382663037097856353229202050400087959602693091");
-        // BigInteger p = new
-        // BigInteger("7207597317903766750519784230994376914317599587332274160752033968574212627910105282787635236581386230309938884368320929301279880959561136587018980259548659");
-
-        // BigInteger n = q.multiply(p);
-        // BigInteger m =
-        // (q.subtract(BigInteger.ONE).multiply(p.subtract(BigInteger.ONE)));
-
-        // BigInteger v = euclidsAlgorithm(m);
-
-        // BigInteger c = encrypt(s, n);
-        // BigInteger z = decrypt(c, v, n);
-
-        // System.out.println("Vårt slutgiltiga e blev: " + e);
-        // System.out.println("Vårt krypterade tal blir: " + c);
-        // System.out.println("När vi dekrypterar " + c + " får vi " + z + " tillbaka");
+        System.out.println("v: " + v);
+        System.out.println("krypterat c: " + c);
+        System.out.println("När vi dekrypterar det får vi z: " + z + " tillbaka");
     }
 
+    /**
+     * RSA encryption: ciphertext = s^e mod n
+     */
     public static BigInteger encrypt(BigInteger s, BigInteger n) {
         return s.modPow(e, n);
     }
 
+    /**
+     * RSA decryption: plaintext = c^v mod n
+     */
     public static BigInteger decrypt(BigInteger c, BigInteger v, BigInteger n) {
         return c.modPow(v, n);
     }
 
+    /**
+     * Euclid's algorithm to compute the modular inverse of e modulo m
+     */
     public static BigInteger euclidsAlgorithm(BigInteger m) {
         BigInteger d1;
         BigInteger v1;
@@ -79,18 +91,22 @@ public class RSA {
         return v;
     }
 
+    /**
+     * Method to test if Euclid's algorithm works as expected
+     */
     public static boolean testEuclidsAlgorithm() {
         Random rand = new Random();
 
+        // e = new BigInteger(512, rand).setBit(0); // a=e=3, 5, 7 or (2^16)+1
+        // BigInteger m = new BigInteger(512, rand).clearBit(0); //Vårt random modulus
+
+        // Question C2
         BigInteger q1 = new BigInteger(
                 "8307769051273421780696919063666844836718940826346093732248802002593429761688688029342383461687584069007551554382663037097856353229202050400087959602693091");
         BigInteger p1 = new BigInteger(
                 "7207597317903766750519784230994376914317599587332274160752033968574212627910105282787635236581386230309938884368320929301279880959561136587018980259548659");
         e = new BigInteger("65537");
         BigInteger m = (q1.subtract(BigInteger.ONE).multiply(p1.subtract(BigInteger.ONE)));
-
-        // e = new BigInteger(512, rand).setBit(0); // a=e=3, 5, 7 or (2^16)+1
-        // BigInteger m = new BigInteger(512, rand).clearBit(0); //Vårt random modulus
 
         BigInteger v1 = euclidsAlgorithm(m);
 

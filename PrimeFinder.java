@@ -18,10 +18,6 @@ public class PrimeFinder {
 
     /**
      * Finds and returns a big prime using Rabin-Miller Algorithm
-     * 
-     * @param bitSize
-     * @param rand
-     * @return BigInteger prime
      */
     public static BigInteger generatePrime(int bitSize, Random rand) {
         boolean isPrime = false;
@@ -76,9 +72,6 @@ public class PrimeFinder {
 
     /**
      * Rabin-Miller Pseudoprime Test
-     * 
-     * @param x, n, s, a, r
-     * @return enum Primestate
      */
     private static Primestates testPrime(BigInteger x, BigInteger n, BigInteger s, BigInteger a, int r) {
         if (x.equals(BigInteger.ONE) || x.equals(n.subtract(BigInteger.ONE))) {
