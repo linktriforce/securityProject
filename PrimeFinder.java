@@ -5,21 +5,22 @@ import java.util.Random;
 public class PrimeFinder {
 
     public static void main(String[] args) {
-        int bitSize = 1024;
+        int bitSize = 512;
         long totalTime = System.currentTimeMillis();
         Random rand = new Random();
 
-        for (int i = 0; i<100; i++) {
+        for (int i = 0; i < 100; i++) {
             generatePrime(bitSize, rand);
-            System.out.println((i+1) + " primtal har hittats och det har hitills gått " +(System.currentTimeMillis()-totalTime) + "ms");
+            System.out.println((i + 1) + " primtal har hittats och det har hitills gått "
+                    + (System.currentTimeMillis() - totalTime) + "ms");
         }
     }
 
     /**
      * Finds and returns a big prime using Rabin-Miller Algorithm
+     * 
      * @param bitSize
-     * @param n
-     * @param startTime
+     * @param rand
      * @return BigInteger prime
      */
     public static BigInteger generatePrime(int bitSize, Random rand) {
@@ -33,7 +34,8 @@ public class PrimeFinder {
             // Generate a new random odd integer that is strictly bigger than 3
             do {
                 n = new BigInteger(bitSize, rand).setBit(0);
-                if (n.mod(five).equals(BigInteger.ZERO)) n.add(BigInteger.TWO);
+                if (n.mod(five).equals(BigInteger.ZERO))
+                    n.add(BigInteger.TWO);
             } while (n.compareTo(new BigInteger("3")) == -1);
 
             // Find r and s för the function n = (2^r)s + 1 such that s is odd
@@ -67,7 +69,6 @@ public class PrimeFinder {
                     isThisPrime = false;
                 }
             }
-
             isPrime = isThisPrime;
         }
         return n;
@@ -84,8 +85,8 @@ public class PrimeFinder {
             return Primestates.PROBABLY_PRIME;
         }
         for (int j = 1; j < r - 1; j++) {
-            x = a.modPow(s.multiply(new BigInteger(Integer.toString(2^j))), n);
-            //x.modPow(BigInteger.TWO, n);
+            // x = a.modPow(s.multiply(new BigInteger(Integer.toString(2^j))), n);
+            x = x.modPow(BigInteger.TWO, n);
             if (x.equals(BigInteger.ONE)) {
                 return Primestates.COMPOSITE;
             }
